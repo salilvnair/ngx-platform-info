@@ -1,0 +1,22 @@
+{
+  "name": "ngx-platform-info",
+  "version": "0.0.2",
+  "author": {
+    "name": "Salil V Nair"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salilvnair/ngx-platform-info.git"
+  },
+  "homepage": "https://github.com/salilvnair/ngx-platform-info",
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "ng",
+    "platform"
+  ],
+  "peerDependencies": {
+    "@angular/common": "^8.1.3",
+    "@angular/core": "^8.1.3"
+  }
+}
