@@ -10,4 +10,5 @@ export class PlatFormInfo {
   browserMajorVersion: number;
   screenSize: string;
   manufacturer: string;
+  deviceType: string;
 }

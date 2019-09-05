@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PlatFormInfo } from './platform-info.model';
+import { Product } from './type/product.type';
+import { Device } from './type/device.type';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,7 @@ export class NgxPlatformInfo {
     }
 
     // browser
-    var nVer = navigator.appVersion;
+    var nVer = navigator.appVersion || navigator.userAgent;
     var nAgt = navigator.userAgent;
     var browser = navigator.appName;
     var version = '' + parseFloat(navigator.appVersion);
@@ -99,45 +101,55 @@ export class NgxPlatformInfo {
     var mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
     var product = unknown;
     var productStrings = [
-      {s:'iPhone', r:/(iPhone)/},
-      {s:'iPad', r:/(iPad)/},
-      {s:'iPod', r:/(iPod)/},
-      {s:'Mobile', r:/(Mobile)/},
-      {s:'Fennec', r:/(Fennec)/},
-      {s:'Android', r:/(Android)/}
-  ];
-  for (var id in productStrings) {
-      var ps = productStrings[id];
-      if (ps.r.test(nAgt)) {
-          product = ps.s;
+        {s: Product.iPhone, r:/(iPhone)/},
+        {s: Product.iPad, r:/(iPad)/},
+        {s: Product.iPod, r:/(iPod)/},
+        {s: Product.Mobile, r:/(Mobile)/},
+        {s: Product.Fennec, r:/(Fennec)/},
+        {s: Product.Android, r:/(Android)/}
+    ];
+    for (var id in productStrings) {
+        var ps = productStrings[id];
+        if (ps.r.test(nAgt)) {
+            product = ps.s;
+            break;
+        }
+    }
+
+    var deviceType  = unknown;
+
+    if(mobile) {
+      deviceType = Device.Mobile;
+    }
+    else {
+      deviceType = Device.Desktop;
+    }
+
+    var manufacturer = unknown;
+    var manufacturerString = [
+      {s:'Apple',r:/iP(ad|od|hone)/},
+      {s:'Amazon',r:/(Kindle|Kindle Fire|KFTHWI Build)/},
+      {s:'Asus',r:/Transformer/},
+      {s:'Barnes & Noble',r:/Nook/},
+      {s:'BlackBerry',r:/PlayBook/},
+      {s:'Google',r:/(Google TV|Nexus|Pixel)/},
+      {s:'HP',r:/TouchPad/},
+      {s:'Mircrosoft',r:/(Xbox|Xbox One|Lumia|Microsoft)/},
+      {s:'Motorola',r:/Xoom/},
+      {s:'Nokia',r:/Nokia/},
+      {s:'HTC',r:/HTC/},
+      {s:'Sony',r:/(G8231 Build|E6653 Build|SGP771 Build)/},
+      {s:'LG',r:/LG-/},
+      {s:'Reliance Industries',r:/LYF-F300B/},
+      {s:'Samsung',r:/(Galaxy S|Galaxy S2|Galaxy S3|Galaxy S4|SM-|SAMSUNG SM-)/}
+    ];
+    for (var id in manufacturerString) {
+      var ms = manufacturerString[id];
+      if (ms.r.test(nAgt)) {
+          manufacturer = ms.s;
           break;
       }
-  }
-
-  var manufacturer = unknown;
-  var manufacturerString = [
-    {s:'Apple',r:/iP(ad|od|hone)/},
-    {s:'Amazon',r:/(Kindle|Kindle Fire|KFTHWI Build)/},
-    {s:'Asus',r:/Transformer/},
-    {s:'Barnes & Noble',r:/Nook/},
-    {s:'BlackBerry',r:/PlayBook/},
-    {s:'Google',r:/(Google TV|Nexus|Pixel)/},
-    {s:'HP',r:/TouchPad/},
-    {s:'Mircrosoft',r:/(Xbox|Xbox One|Lumia|Microsoft)/},
-    {s:'Motorola',r:/Xoom/},
-    {s:'HTC',r:/HTC/},
-    {s:'Sony',r:/(G8231 Build|E6653 Build|SGP771 Build)/},
-    {s:'LG',r:/LG-/},
-    {s:'Samsung',r:/(Galaxy S|Galaxy S2|Galaxy S3|Galaxy S4|SM-|SAMSUNG SM-)/}
-  ];
-  console.log(nAgt)
-  for (var id in manufacturerString) {
-    var ms = manufacturerString[id];
-    if (ms.r.test(nAgt)) {
-        manufacturer = ms.s;
-        break;
     }
-  }
 
     // cookie
     var cookieEnabled = (navigator.cookieEnabled) ? true : false;
@@ -195,17 +207,25 @@ export class NgxPlatformInfo {
 
     switch (os) {
         case 'Mac OS X':
-            osVersion = /Mac OS X (10[\.\_\d]+)/.exec(nAgt)[1];
+            let osVersionData = /Mac OS X (\d+)_(\d+)_?(\d+)?/.exec(nVer);
+            if(osVersionData && osVersionData.length > 2) {
+              osVersion = osVersionData[1] + '.' + osVersionData[2] + '.' + (osVersionData[3] || 0+'');
+            }
             manufacturer = 'Apple';
             break;
 
         case 'Android':
-            osVersion = /Android ([\.\_\d]+)/.exec(nAgt)[1];
+            osVersionData = /Android ([\.\_\d]+)/.exec(nAgt);
+            if(osVersionData && osVersionData.length > 1) {
+              osVersion = osVersionData[1];
+            }
             break;
 
         case 'iOS':
-            let osVersionData = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
-            osVersion = osVersionData[1] + '.' + osVersionData[2] + '.' + (osVersionData[3] || 0+'');
+            osVersionData = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
+            if(osVersionData && osVersionData.length > 2) {
+              osVersion = osVersionData[1] + '.' + osVersionData[2] + '.' + (osVersionData[3] || 0+'');
+            }
             break;
     }
 
@@ -219,8 +239,8 @@ export class NgxPlatformInfo {
     this.platFormInfo.browserMajorVersion = majorVersion;
     this.platFormInfo.screenSize = screenSize;
     this.platFormInfo.manufacturer = manufacturer;
+    this.platFormInfo.deviceType = deviceType;
   }
-
 
   public get os() : string {
     return this.platFormInfo.os;
@@ -256,6 +276,10 @@ export class NgxPlatformInfo {
 
   public get manufacturer() : string {
     return this.platFormInfo.manufacturer;
+  }
+
+  public get deviceType() : string {
+    return this.platFormInfo.deviceType;
   }
 
   public extract() : PlatFormInfo {
