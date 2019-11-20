@@ -215,14 +215,14 @@ export class NgxPlatformInfo {
             break;
 
         case 'Android':
-            osVersionData = /Android ([\.\_\d]+)/.exec(nAgt);
+            let osVersionData = /Android ([\.\_\d]+)/.exec(nAgt);
             if(osVersionData && osVersionData.length > 1) {
               osVersion = osVersionData[1];
             }
             break;
 
         case 'iOS':
-            osVersionData = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
+            let osVersionData = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
             if(osVersionData && osVersionData.length > 2) {
               osVersion = osVersionData[1] + '.' + osVersionData[2] + '.' + (osVersionData[3] || 0+'');
             }
