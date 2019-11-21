@@ -1,4 +1,4 @@
-# NgxPlatformInfo
+# NgxPlatformInfo ![npm release](https://img.shields.io/npm/v/ngx-platform-info?style=plastic)
 > A platform detection angular library 
 
 ## How to use:
