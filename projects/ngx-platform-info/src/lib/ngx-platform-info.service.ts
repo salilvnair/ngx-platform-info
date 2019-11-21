@@ -198,7 +198,7 @@ export class NgxPlatformInfo {
     }
 
     var osVersion = unknown;
-
+    var osVersionData;
     if (/Windows/.test(os)) {
         osVersion = /Windows (.*)/.exec(os)[1];
         os = 'Windows';
@@ -207,7 +207,7 @@ export class NgxPlatformInfo {
 
     switch (os) {
         case 'Mac OS X':
-            let osVersionData = /Mac OS X (\d+)_(\d+)_?(\d+)?/.exec(nVer);
+            osVersionData = /Mac OS X (\d+)_(\d+)_?(\d+)?/.exec(nVer);
             if(osVersionData && osVersionData.length > 2) {
               osVersion = osVersionData[1] + '.' + osVersionData[2] + '.' + (osVersionData[3] || 0+'');
             }
@@ -215,14 +215,14 @@ export class NgxPlatformInfo {
             break;
 
         case 'Android':
-            let osVersionData = /Android ([\.\_\d]+)/.exec(nAgt);
+            osVersionData = /Android ([\.\_\d]+)/.exec(nAgt);
             if(osVersionData && osVersionData.length > 1) {
               osVersion = osVersionData[1];
             }
             break;
 
         case 'iOS':
-            let osVersionData = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
+            osVersionData = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
             if(osVersionData && osVersionData.length > 2) {
               osVersion = osVersionData[1] + '.' + osVersionData[2] + '.' + (osVersionData[3] || 0+'');
             }
